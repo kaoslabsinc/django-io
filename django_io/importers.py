@@ -10,14 +10,14 @@ class DataImporterMeta(type):
     @property
     def _label_to_keys_map(cls):
         return {
-            field.label: key
+            field.label or key: key
             for key, field in cls.form_class.base_fields.items()
         }
 
     @property
     def _keys_to_labels_map(cls):
         return {
-            key: field.label
+            key: field.label or key
             for key, field in cls.form_class.base_fields.items()
         }
 
