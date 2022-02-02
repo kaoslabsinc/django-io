@@ -73,9 +73,13 @@ class DataImporter(metaclass=DataImporterMeta):
     def save(self):  # TODO: commit
         if self.errors:
             raise ValueError("Import could not be run because the data didn't validate")
+
+        num_rows_written = 0
         with transaction.atomic():
             for form in self._forms:
                 form.save()
+                num_rows_written += 1
+        return num_rows_written
 
 
 __all__ = [
