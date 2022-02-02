@@ -14,3 +14,8 @@ class DataImportableAdmin(admin.ModelAdmin):
             **(extra_context or {}),
         }
         return super(DataImportableAdmin, self).changelist_view(request, extra_context)
+
+
+__all__ = [
+    'DataImportableAdmin',
+]

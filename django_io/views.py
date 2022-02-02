@@ -54,3 +54,8 @@ class DataImportView(SuccessMessageMixin, FormView):
     def get_success_message(self, cleaned_data):
         return self.success_message.format(n=self.num_rows_written,
                                            verbose_name_plural=self.get_item_verbose_name_plural())
+
+
+__all__ = [
+    'DataImportView',
+]
