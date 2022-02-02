@@ -1,0 +1,9 @@
+include LICENSE
+include README.md
+
+graft docs
+
+graft django_io/static
+graft django_io/templates
+graft django_io/*/static
+graft django_io/*/templates
