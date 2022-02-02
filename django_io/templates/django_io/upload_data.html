@@ -7,6 +7,17 @@
 
 {% block content %}
   <div class="page-wrapper">
+    {% if back_url %}
+      <section>
+        <div class="container">
+          <a href="{{ back_url }}" class="btn btn-link text-decoration-none">
+            <i class="fas fa-chevron-left"></i>
+            Back
+          </a>
+        </div>
+      </section>
+    {% endif %}
+
     <section>
       <div class="container">
         <header class="section-header">

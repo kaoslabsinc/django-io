@@ -20,6 +20,7 @@ class DataImportView(SuccessMessageMixin, FormView):
     item_verbose_name = 'item'
     item_verbose_name_plural = None
     sample_sheet = None
+    back_url = None
 
     def __init__(self, *args, **kwargs):
         super(DataImportView, self).__init__(*args, **kwargs)
@@ -27,6 +28,9 @@ class DataImportView(SuccessMessageMixin, FormView):
 
     def get_item_verbose_name_plural(self):
         return self.item_verbose_name_plural or self.item_verbose_name + 's'
+
+    def get_back_url(self):
+        return self.back_url
 
     def data_invalid(self, importer):
         return self.render_to_response(self.get_context_data(errors=importer.errors_formatted))
@@ -49,6 +53,7 @@ class DataImportView(SuccessMessageMixin, FormView):
             'sample_sheet': self.sample_sheet,
             'verbose_name': self.item_verbose_name,
             'verbose_name_plural': self.get_item_verbose_name_plural(),
+            'back_url': self.get_back_url(),
         }
 
     def get_success_message(self, cleaned_data):
