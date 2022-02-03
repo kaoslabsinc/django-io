@@ -1,5 +1,5 @@
 name: django-io
-version: 0.1.0-dev1
+version: 0.1.0-dev2
 description: Importing and exporting of data, and other file operations for Django apps
 
 repo_url: https://github.com/kaoslabsinc/django-io
