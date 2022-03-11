@@ -1,5 +1,12 @@
 from django import forms
 
+__all__ = [
+    'CurrencyField',
+    'PercentageField',
+    'ListField',
+    'FormattedIntegerField',
+]
+
 
 class CurrencyField(forms.DecimalField):
     def to_python(self, value):
@@ -34,10 +41,3 @@ class FormattedIntegerField(forms.IntegerField):
     def to_python(self, value):
         value = value.replace(',', '')
         return super(FormattedIntegerField, self).to_python(value)
-
-
-__all__ = [
-    'CurrencyField',
-    'PercentageField',
-    'ListField',
-]
