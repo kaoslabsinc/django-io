@@ -29,9 +29,9 @@ class DataImporter(metaclass=DataImporterMeta):
     def check_extra_headers(cls, headers):
         return set(headers) - set(cls._label_to_keys_map.keys())
 
-    def __init__(self, data):
+    def load_data(self, data):
         label_to_keys_map = self.__class__._label_to_keys_map
-        self.data = [
+        return [
             {
                 label_to_keys_map[label]: value
                 for label, value in row.items()
@@ -39,6 +39,9 @@ class DataImporter(metaclass=DataImporterMeta):
             }
             for row in data
         ]
+
+    def __init__(self, data):
+        self.data = self.load_data(data)
         self._errors = None
         self._forms = []
 
