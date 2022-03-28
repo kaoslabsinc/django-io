@@ -35,10 +35,13 @@ class DataImportView(SuccessMessageMixin, FormView):
     def data_invalid(self, importer):
         return self.render_to_response(self.get_context_data(errors=importer.errors_formatted))
 
-    def form_valid(self, form):
-        reader = csv.DictReader(codecs.iterdecode(form.files['sheet'], 'utf-8-sig'))
+    def get_data_from_form(self, form):
+        return csv.DictReader(codecs.iterdecode(form.files['sheet'], 'utf-8-sig'))
 
-        importer = self.importer_class(reader)
+    def form_valid(self, form):
+        data = self.get_data_from_form(form)
+
+        importer = self.importer_class(data)
         if importer.is_valid():
             self.num_rows_written = importer.save()
         else:
