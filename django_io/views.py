@@ -5,6 +5,8 @@ from django import forms
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import FormView
 
+from django_io.importers import DataImporter
+
 
 class UploadDataForm(forms.Form):
     sheet = forms.FileField()
@@ -36,9 +38,8 @@ class DataImportView(SuccessMessageMixin, FormView):
         return self.render_to_response(self.get_context_data(errors=importer.errors_formatted))
 
     def form_valid(self, form):
-        reader = csv.DictReader(codecs.iterdecode(form.files['sheet'], 'utf-8-sig'))
-
-        importer = self.importer_class(reader)
+        data = self.importer_class.load_data_from_file(form.files['sheet'])
+        importer = self.importer_class(data)
         if importer.is_valid():
             self.num_rows_written = importer.save()
         else:

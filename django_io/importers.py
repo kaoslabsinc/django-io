@@ -1,3 +1,5 @@
+import codecs
+import csv
 from collections import OrderedDict
 
 from django.db import transaction
@@ -29,9 +31,13 @@ class DataImporter(metaclass=DataImporterMeta):
     def check_extra_headers(cls, headers):
         return set(headers) - set(cls._label_to_keys_map.keys())
 
-    def __init__(self, data):
+    @staticmethod
+    def load_data_from_file(file):
+        return csv.DictReader(codecs.iterdecode(file, 'utf-8-sig'))
+
+    def translate_data(self, data):
         label_to_keys_map = self.__class__._label_to_keys_map
-        self.data = [
+        return [
             {
                 label_to_keys_map[label]: value
                 for label, value in row.items()
@@ -39,6 +45,9 @@ class DataImporter(metaclass=DataImporterMeta):
             }
             for row in data
         ]
+
+    def __init__(self, data):
+        self.data = self.translate_data(data)
         self._errors = None
         self._forms = []
 
