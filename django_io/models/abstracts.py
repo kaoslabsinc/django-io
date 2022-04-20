@@ -1,4 +1,6 @@
-from django.db import models
+import traceback
+
+from django.db import models, transaction
 from django.utils.timezone import now
 from django_fsm import FSMIntegerField, transition
 
@@ -8,8 +10,9 @@ from .enums import *
 class AbstractImportJob(models.Model):
     class Meta:
         abstract = True
-    
+
     auto_start = True
+    catch_exceptions = True
 
     file = models.FileField(upload_to='imports/')
 
@@ -33,12 +36,33 @@ class AbstractImportJob(models.Model):
         self.completed_on = now()
         self.errors = errors
 
-    def process_file(self):
+    def _process_file(self):
         raise NotImplementedError
 
-    def process_data(self, data):
+    def _process_data(self, data):
         raise NotImplementedError
 
     def process(self):
-        data = self.process_file()
-        self.process_data(data)
+        with transaction.atomic():
+            self.start()
+            self.save()
+        try:
+            data = self._process_file()
+            self._process_data(data)
+        except:
+            with transaction.atomic():
+                self.complete_w_errors(traceback.format_exc())
+                self.save()
+            if not self.catch_exceptions:
+                raise
+        else:
+            with transaction.atomic():
+                self.complete_successfully()
+                self.save()
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            super(AbstractImportJob, self).save(*args, **kwargs)
+
+        if self.auto_start and self.status == ImportJobStatus.not_started:
+            self.process()
