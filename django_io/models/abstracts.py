@@ -1,10 +1,31 @@
 import traceback
 
+from django.core.files import File
 from django.db import models, transaction
 from django.utils.timezone import now
 from django_fsm import FSMIntegerField, transition
 
 from .enums import *
+
+
+class DataImporter:
+    file: File
+    _clean_errors = dict
+
+    def _file_to_unprocessed_data(self):
+        raise NotImplementedError
+
+    def full_clean(self, unprocessed_data):
+        return unprocessed_data
+
+    @property
+    def clean_errors(self):
+        if self._clean_errors is None:
+            self.full_clean(self._file_to_unprocessed_data())
+        return self._clean_errors
+
+    def is_valid(self):
+        return not self.clean_errors
 
 
 class AbstractImportJob(models.Model):
