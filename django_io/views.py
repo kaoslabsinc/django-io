@@ -1,11 +1,6 @@
-import codecs
-import csv
-
 from django import forms
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import FormView
-
-from django_io.importers import DataImporter
 
 
 class UploadDataForm(forms.Form):
